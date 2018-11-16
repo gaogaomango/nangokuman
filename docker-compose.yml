@@ -27,13 +27,5 @@ services:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: ${ENV_MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${ENV_MYSQL_PASSWORD}
-    deploy:
-      replicas: 5
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 100M
-      restart_policy:
-        condition: on-failure
 volumes:
   db_data:
