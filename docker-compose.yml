@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: nangouman-blog-db
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ENV_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${ENV_MYSQL_DATABASE}
+      MYSQL_USER: ${ENV_MYSQL_USER}
+      MYSQL_PASSWORD: ${ENV_MYSQL_PASSWORD}
+  wordpress:
+    image: wordpress:latest
+    container_name: nangouman-blog
+    build: .
+    volumes:
+      - ./themes/stinger8:/var/www/html/wp-content/themes/stinger8
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${ENV_MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${ENV_MYSQL_PASSWORD}
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 100M
+      restart_policy:
+        condition: on-failure
+volumes:
+  db_data:
